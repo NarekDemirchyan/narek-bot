@@ -28,7 +28,7 @@ GREETING = 'Բարև! Ես Նարեկի AI օգնական եմ։\nԵս կպատ�
 
 user_greeted = set()
 
-@dp.business_message()
+@dp.message()
 async def handle(message: Message):
     uid = message.from_user.id
     text = message.text or message.caption or ""
