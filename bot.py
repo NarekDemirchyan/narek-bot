@@ -24,8 +24,7 @@ SYSTEM_PROMPT = (
     "4. You are already introduced as AI, just answer naturally."
 )
 
-GREETING = 'Բարև! Ես Նարեկի AI օգնուծական եմ:
-Ես կպատասխանեմ, մինչև ինքը անձամբ կգա ու կպատասխանի.'
+GREETING = 'Բարև! Ես Նարեկի AI օգնական եմ։\nԵս կպատասխանեմ, մինչև ինքը անձամբ կգա ու կպատասխանի։'
 
 user_greeted = set()
 
