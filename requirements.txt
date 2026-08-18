@@ -1,4 +1,4 @@
 python-telegram-bot==21.10
 apscheduler
-pydantic<2.10
+pydantic==2.10.6
 requests
