@@ -1,5 +1,7 @@
 import os
 import asyncio
+from flask import Flask
+from threading import Thread
 import requests
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
