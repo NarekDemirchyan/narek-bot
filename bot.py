@@ -199,13 +199,9 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    # app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     
     app.run_polling()
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    inline_keyboard = [
-        [InlineKeyboardButton("🇦🇲 Հայերեն", callback_data="lang_am"), InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
         [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"), InlineKeyboardButton("🇨🇳 中文", callback_data="lang_zh")]
     ]
     inline_markup = InlineKeyboardMarkup(inline_keyboard)
