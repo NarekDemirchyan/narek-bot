@@ -258,7 +258,7 @@ def main():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    TOKEN = "8989820281:AAGePam2vWb67_TXGjcAvips8y1MhgfeNnE"
+    TOKEN = os.environ.get("TOKEN")
     
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
