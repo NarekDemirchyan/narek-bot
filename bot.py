@@ -140,7 +140,7 @@ TRANSLATIONS = {
             ("RSD", "🇷🇸", "塞尔维亚第纳尔"), ("SAR", "🇸🇦", "沙特里亚尔"), ("SEK", "🇸🇪", "瑞典克朗"),
             ("SGD", "🇸🇬", "新加坡元"), ("THB", "🇹🇭", "泰铢"), ("TJS", "🇹🇯", "塔吉克斯坦索莫尼"),
             ("TMT", "🇹🇲", "土库曼斯坦马纳特"), ("TND", "🇹🇳", "突尼斯第纳尔"), ("TRY", "🇹🇷", "土耳其里拉"),
-            ("TWD", "🇹🇼", "新台币"), ("UAH", "🇦🇺", "乌克兰格里夫纳"), ("UGX", "🇺🇬", "乌干达先令"),
+            ("TWD", "🇹🇼", "新台币"), ("UAH", "🇺🇦", "乌克兰格里夫纳"), ("UGX", "🇺🇬", "乌干达先令"),
             ("UYU", "🇺🇾", "乌拉圭比索"), ("UZS", "🇺🇿", "乌兹别克斯坦苏姆"), ("VND", "🇻🇳", "越南盾"),
             ("ZAR", "🇿🇦", "南非兰特"), ("ZMW", "🇿🇲", "赞比亚克瓦查")
         ]
@@ -260,27 +260,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for c_code, (c_flag, c_name) in curr_dict.items():
         rate = rates.get(c_code, 0.0) * amount
         response_text += f"• {c_flag} {rate:.2f} {c_code} ({c_name})\n"
-   def main():
-    keep_alive()
-    TOKEN = os.environ.get("TOKEN")
     
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_handler))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    response_text += f"\n{t_data['other_title']}\n"
+    for code, flag_w, name_w in world_list:
+        rate = rates.get(code, 0.0) * amount
+        response_text += f"• {flag_w} {rate:.2f} {code} ({name_w})\n"
 
-    print("🚀 Բոտը աշխատում է մաքուր տեսքով...")
-    
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-    app.run_polling()
-
-if __name__ == "__main__":
-    main()
+    await update.message.reply_text(response_text)
 
 def main():
     keep_alive()
