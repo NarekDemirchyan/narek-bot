@@ -1,19 +1,16 @@
 import os
 import logging
-import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
 
-# Կարգավորում ենք լոգավորումը
+# Լոգերի կարգավորում
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
 
-# Վերցնում ենք թոկենը Render-ի միջավայրից
 TOKEN = os.environ.get("TOKEN")
 
-# /start հրամանի ֆունկցիան, որը բերում է լեզվի ընտրության կոճակները
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
@@ -24,7 +21,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Խնդրում ենք ընտրել լեզուն / Пожалуйста, выберите язык:", reply_markup=reply_markup)
 
-# Կոճակների սեղմման մշակումը
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -34,23 +30,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "lang_ru":
         await query.edit_message_text(text="Вы выбрали русский язык.")
 
-async def main():
+def main():
+    if not TOKEN:
+        print("Սխալ: TOKEN-ը գտնված չէ environment-ում!")
+        return
+
     application = ApplicationBuilder().token(TOKEN).build()
 
-    # Ավելացնում ենք հրամաններն ու կոճակների լսողները
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    # Ապահով գործարկում ենք բոտը Python-ի նոր տարբերակների համար
-    await application.initialize()
-    await application.start()
-    await application.updater.start_polling()
-
-    print("Բոտը հաջողությամբ աշխատում է...")
-    
-    # Թույլ ենք տալիս բոտին աշխատել անընդհատ
-    stop_signal = asyncio.Event()
-    await stop_signal.wait()
+    print("Բոտը հաջողությամբ սկսեց աշխատել...")
+    application.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
