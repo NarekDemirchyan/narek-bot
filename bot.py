@@ -1,5 +1,6 @@
 import os
 import logging
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
 
@@ -33,15 +34,23 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "lang_ru":
         await query.edit_message_text(text="Вы выбрали русский язык.")
 
-def main():
+async def main():
     application = ApplicationBuilder().token(TOKEN).build()
 
     # Ավելացնում ենք հրամաններն ու կոճակների լսողները
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button_handler))
 
+    # Ապահով գործարկում ենք բոտը Python-ի նոր տարբերակների համար
+    await application.initialize()
+    await application.start()
+    await application.updater.start_polling()
+
     print("Բոտը հաջողությամբ աշխատում է...")
-    application.run_polling()
+    
+    # Թույլ ենք տալիս բոտին աշխատել անընդհատ
+    stop_signal = asyncio.Event()
+    await stop_signal.wait()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
