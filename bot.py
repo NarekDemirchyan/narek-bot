@@ -172,6 +172,24 @@ def get_exchange_rates(base_currency):
     except Exception as e:
         print(f"API Error: {e}")
     return None
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    inline_keyboard = [
+        [InlineKeyboardButton("🇦🇲 Հայերեն", callback_data="lang_am"), InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
+        [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"), InlineKeyboardButton("🇨🇳 中文", callback_data="lang_zh")]
+    ]
+    inline_markup = InlineKeyboardMarkup(inline_keyboard)
+
+    await update.message.reply_text(
+        "Ընտրիր լեզուն / Please choose a language / Выберите язык / 请选择语言:",
+        reply_markup=inline_markup
+    )
+
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    data = query.data
+  
+
 if __name__ == "__main__":
     keep_alive()
     print("🚀 Բոտը աշխատում է մաքուր տեսքով...")
