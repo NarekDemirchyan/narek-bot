@@ -260,13 +260,27 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for c_code, (c_flag, c_name) in curr_dict.items():
         rate = rates.get(c_code, 0.0) * amount
         response_text += f"• {c_flag} {rate:.2f} {c_code} ({c_name})\n"
+   def main():
+    keep_alive()
+    TOKEN = os.environ.get("TOKEN")
     
-    response_text += f"\n{t_data['other_title']}\n"
-    for code, flag_w, name_w in world_list:
-        rate = rates.get(code, 0.0) * amount
-        response_text += f"• {flag_w} {rate:.2f} {code} ({name_w})\n"
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
-    await update.message.reply_text(response_text)
+    print("🚀 Բոտը աշխատում է մաքուր տեսքով...")
+    
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
 
 def main():
     keep_alive()
