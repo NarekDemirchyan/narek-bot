@@ -146,9 +146,6 @@ TRANSLATIONS = {
         ]
     }
 }
-from flask import Flask
-from threading import Thread
-import os
 
 app_web = Flask('')
 
@@ -163,6 +160,7 @@ def run_web():
 def keep_alive():
     t = Thread(target=run_web)
     t.start()
+
 def get_exchange_rates(base_currency):
     try:
         response = requests.get(f"{API_URL}{base_currency}")
@@ -172,36 +170,10 @@ def get_exchange_rates(base_currency):
     except Exception as e:
         print(f"API Error: {e}")
     return None
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     inline_keyboard = [
         [InlineKeyboardButton("🇦🇲 Հայերեն", callback_data="lang_am"), InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
-        [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"), InlineKeyboardButton("🇨🇳 中文", callback_data="lang_zh")]
-    ]
-    inline_markup = InlineKeyboardMarkup(inline_keyboard)
-
-    await update.message.reply_text(
-        "Ընտրիր լեզուն / Please choose a language / Выберите язык / 请选择语言:",
-        reply_markup=inline_markup
-    )
-
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    data = query.data
-  
-
-if __name__ == "__main__":
-    keep_alive()
-    print("🚀 Բոտը աշխատում է մաքուր տեսքով...")
-    
-    TOKEN = os.environ.get("TOKEN")
-    
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_handler))
-    # app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    
-    app.run_polling()
         [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"), InlineKeyboardButton("🇨🇳 中文", callback_data="lang_zh")]
     ]
     inline_markup = InlineKeyboardMarkup(inline_keyboard)
@@ -295,25 +267,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response_text += f"• {flag_w} {rate:.2f} {code} ({name_w})\n"
 
     await update.message.reply_text(response_text)
-app_web = Flask('')
 
-@app_web.route('/')
-def home():
-    return "Bot is running!"
-
-def run_web():
-    app_web.run(host='0.0.0.0', port=10000)
-
-def keep_alive():
-    t = Thread(target=run_web)
-    t.start()
 def main():
     keep_alive()
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
     TOKEN = os.environ.get("TOKEN")
     
     app = ApplicationBuilder().token(TOKEN).build()
