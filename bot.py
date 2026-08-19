@@ -1,33 +1,47 @@
 import os
 import logging
-import asyncio
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
 
+# Կարգավորում ենք լոգավորումը
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
 
-import os
-
+# Վերցնում ենք թոկենը Render-ի միջավայրից
 TOKEN = os.environ.get("TOKEN")
 
+# /start հրամանի ֆունկցիան, որը բերում է լեզվի ընտրության կոճակները
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Բարև Ձեզ! Բոտն հաջողությամբ աշխատում է։")
+    keyboard = [
+        [
+            InlineKeyboardButton("Հայերեն 🇦🇲", callback_data="lang_am"),
+            InlineKeyboardButton("Русский 🇷🇺", callback_data="lang_ru"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Խնդրում ենք ընտրել լեզուն / Пожалуйста, выберите язык:", reply_markup=reply_markup)
 
-async def main():
+# Կոճակների սեղմման մշակումը
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    
+    if query.data == "lang_am":
+        await query.edit_message_text(text="Դուք ընտրեցիք հայերեն լեզուն։")
+    elif query.data == "lang_ru":
+        await query.edit_message_text(text="Вы выбрали русский язык.")
+
+def main():
     application = ApplicationBuilder().token(TOKEN).build()
+
+    # Ավելացնում ենք հրամաններն ու կոճակների լսողները
     application.add_handler(CommandHandler("start", start))
-    
-    # Աշխատեցնում ենք polling-ը ասինքրոն տարբերակով, որը խնդիր չի ունենա Python 3.14-ի հետ
-    await application.initialize()
-    await application.start()
-    await application.updater.start_polling()
-    
-    # Թույլ ենք տալիս բոտին աշխատել անընդհատ
-    stop_signal = asyncio.Event()
-    await stop_signal.wait()
+    application.add_handler(CallbackQueryHandler(button_handler))
+
+    print("Բոտը հաջողությամբ աշխատում է...")
+    application.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
