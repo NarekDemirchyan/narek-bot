@@ -9,7 +9,9 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-TOKEN = os.getenv("BOT_TOKEN")
+import os
+
+TOKEN = os.environ.get("TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Բարև Ձեզ! Բոտն հաջողությամբ աշխատում է։")
