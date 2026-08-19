@@ -175,6 +175,14 @@ def get_exchange_rates(base_currency):
 if __name__ == "__main__":
     keep_alive()
     print("🚀 Բոտը աշխատում է մաքուր տեսքով...")
+    
+    TOKEN = os.environ.get("TOKEN")
+    
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    
     app.run_polling()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
